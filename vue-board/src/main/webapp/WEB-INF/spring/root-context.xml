@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	
+	<!-- datasource connection pool -->
+	<bean id="dataSourceConfig" class="com.zaxxer.hikari.HikariConfig"> 
+      <property name="driverClassName" value="org.mariadb.jdbc.Driver"></property> 
+      <property name="jdbcUrl" value="jdbc:mariadb://112.220.90.92:3306/m_db?allowMultiQueries=true&amp;useSSL=false&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;zeroDateTimeBehavior=convertToNull"></property> 
+      <property name="username" value="sp_user"></property>
+      <property name="password" value="sp123456!@#"></property>
+	</bean>
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+      <constructor-arg ref="dataSourceConfig" />
+   </bean>
+	<!-- mybatis SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:/mybatis-config.xml" />
+        <property name="mapperLocations" value="classpath:/mappers/*Mapper.xml" />
+	</bean>
+	<bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+	
+	<context:component-scan base-package="com.bbs.vue.service" />
+	<context:component-scan base-package="com.bbs.vue.vo" />
+	<context:component-scan base-package="com.bbs.vue.dao" />
+	
+</beans>

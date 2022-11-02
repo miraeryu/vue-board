@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VueMapper">
+		<select id="allList" resultType="VueVO">
+		  SELECT  bbs_id		AS bbsId
+		  	   ,  title			AS title
+		  	   ,  read_cnt		AS readCnt
+		  	   ,  updt_nm		AS updtNm
+		  	   ,  updt_dt		AS updtDt
+		  	   
+		    FROM  default_bbs
+		   WHERE  use_at = 'Y'
+		<if test="keyword != null and keyword != ''">
+			<if test="category == 'all'">
+			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
+			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
+			</if>
+			<if test="category == 'title'">
+				AND title LIKE CONCAT('%', #{ keyword }, '%')
+			</if>
+			<if test="category == 'content'">
+				AND content LIKE CONCAT('%', #{ keyword }, '%') 
+			</if>
+			<if test="category == 'updtNm'">
+				AND updt_nm LIKE CONCAT('%', #{ keyword }, '%') 
+			</if>
+		</if>
+		ORDER BY  bbs_id DESC
+		<!-- startRow행부터 viewPage건 출력 -->
+		
+	</select>
+	
+	<select id="rowCnt" parameterType="VueVO" resultType="Integer">
+		SELECT  COUNT(bbs_id)
+		  FROM  default_bbs
+		 WHERE  use_at = 'Y'
+		<if test="keyword != null and keyword != ''">
+			<if test="category == 'all'">
+			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
+			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
+			</if>
+			<if test="category == 'title'">
+				AND title LIKE CONCAT('%', #{ keyword }, '%') 
+			</if>
+			<if test="category == 'content'">
+				AND content LIKE CONCAT('%', #{ keyword }, '%') 
+			</if>
+			<if test="category == 'updtNm'">
+				AND updt_nm LIKE CONCAT('%', #{ keyword }, '%') 
+			</if>
+		</if>
+	</select>
+	
+	<select id="readOne" resultType="VueVO">
+		SELECT  bbs_id			AS bbsId
+			 ,  title			AS title
+			 ,  content			AS content
+			 ,  read_cnt		AS readCnt
+			 ,  updt_nm			AS updtNm
+			 ,  updt_dt			AS updtDt
+			 
+		  FROM  default_bbs
+		 WHERE  bbs_id = #{bbsId}
+	</select>
+	
+	<select id="maxBbsId" resultType="Integer">
+		SELECT  MAX(bbs_id) +1 
+		  FROM  default_bbs
+	</select>
+	
+	<insert id="newPost" parameterType="VueVO">
+		INSERT INTO default_bbs(
+		
+				bbs_id
+			  , title
+			  , content
+			  , read_cnt
+			  , regist_nm
+			  , regist_dt
+			  , updt_nm
+			  , updt_dt
+			  , use_at
+			  
+			  )VALUES(
+			    #{bbsId}
+			  , #{title}
+			  , #{content}
+			  , 0
+			  , #{registNm}
+			  , NOW()
+			  , #{registNm}
+			  , NOW()
+			  , 'Y'
+			  )
+			  
+	</insert>
+	
+	<update id="editPost" parameterType="VueVO">
+		UPDATE default_bbs
+		   SET title = #{title}
+		     , content = #{content}
+		     , updt_nm = #{updtNm}
+		     , updt_dt = NOW()
+		 WHERE bbs_id = #{bbsId}
+		
+	</update>
+	
+	<update id="deletePost">
+		UPDATE default_bbs
+		   SET use_at = 'N'
+		 WHERE bbs_id = #{bbsId}
+	</update>
+		
+	<update id="updateReadCnt">
+		UPDATE  default_bbs
+		   SET  read_cnt = read_cnt + 1
+		 WHERE  bbs_id = #{bbsId}
+	</update>
+</mapper>
