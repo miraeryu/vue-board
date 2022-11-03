@@ -19,28 +19,28 @@
 			<tbody>
 				<tr>
 					<td>글 번호</td>
-					<td colspan="5" id="bbsId">${ post.bbsId }</td>
+					<td colspan="5" id="bbsId">{{ post.bbsId }}</td>
 				</tr>
 				<tr>
 					<td>글제목</td>
-					<td colspan="5">${ post.title }</td>
+					<td colspan="5">{{ post.title }}</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
-					<td>${ post.updtNm }</td>
+					<td>{{ post.updtNm }}</td>
 					<td>작성 날짜</td>
-					<td>${ post.updtDt }</td>
+					<td>{{ post.updtDt }}</td>
 					<td>조회 수</td>
-					<td>${ post.readCnt + 1 }</td>
+					<td>{{ post.readCnt + 1 }}</td>
 				</tr>
 				<tr>
-					<td colspan="6"><pre>${ post.content }</pre></td>
+					<td colspan="6"><pre>{{ post.content }}</pre></td>
 				</tr>
 			</tbody>
 			<tfoot>
 				<tr>
 					<td colspan="6">
-						<button type="button" onclick="goModify('${ post.bbsId }')">수정하기</button>
+						<button type="button" onclick="goModify()">수정하기</button>
 						<button type="button" onclick="delConfirm()">삭제하기</button>
 						<button type="button" onclick="goList()">목록으로</button>
 					</td>
@@ -50,6 +50,13 @@
 	</div>
 </body>
 <script>
-	
+	const readPostDiv = Vue.createApp({
+		el : "#read-post-div",
+		data : function(){
+			return {
+				post : ${post}
+			}
+		}
+	}).mount("#read-post-div")
 </script>
 </html>

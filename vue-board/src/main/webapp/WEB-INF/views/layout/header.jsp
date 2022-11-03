@@ -15,7 +15,7 @@
 <script>
 $(document).ready(function(){
 	$("#header").on("click",function(){
-		location.href="/"
+		location.href="/list"
 	})
 })
 </script>

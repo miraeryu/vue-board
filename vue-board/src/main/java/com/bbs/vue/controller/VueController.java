@@ -1,5 +1,6 @@
 package com.bbs.vue.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bbs.vue.service.VueService;
 import com.bbs.vue.vo.VueVO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
 public class VueController {
@@ -25,30 +28,58 @@ public class VueController {
 	private VueService vueService;
 	
 	@RequestMapping("/list")
-	public String list(@ModelAttribute VueVO vo, Model model) {
-		logger.info("=========================list============================");
-		model.addAttribute(vueService.allList(vo));
+	public String list(@ModelAttribute VueVO vo, Model model) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		 // Date Format 설정
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mapper.setDateFormat(dateFormat);
+		
+		logger.info("=========================List=========================");
+		model.addAttribute("list", mapper.writeValueAsString(vueService.allList(vo)));
+		System.out.println(mapper.writeValueAsString(vueService.allList(vo)));
 		return "board/list.tiles";
 	}
 	
 	@RequestMapping("/listLoad")
 	public ResponseEntity<List<VueVO>> listLoad(@ModelAttribute VueVO vo) {
-		logger.info("=========================Load============================");
+		logger.info("=========================Load=========================");
 		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword());
 		List<VueVO> list = vueService.allList(vo);
 		return new ResponseEntity<List<VueVO>>(list, HttpStatus.OK);
 	}
 	
 	@RequestMapping("/readPost")
-	public String readPost(@ModelAttribute VueVO vo, Model model) {
-		VueVO readPost = vueService.readOne(vo.getBbsId());
+	public String readPost(@ModelAttribute VueVO vo, Model model) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		// Date Format 설정
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        mapper.setDateFormat(dateFormat);
+        
+        logger.info("=========================Read=========================");
+		String readPost = mapper.writeValueAsString(vueService.readOne(vo.getBbsId()));
 		model.addAttribute("post", readPost);
 		model.addAttribute("vo", vo);
 		if (readPost != null) {
 			vueService.updateReadCnt(vo.getBbsId());
-			logger.info("***********조회 수 업데이트**********");
+			logger.info("======================ViewUpdate======================");
 		}
 		return "board/readPost.tiles";
 	}
+	
+	// 글 수정 폼
+	@RequestMapping("/editForm")
+	public String editForm(@ModelAttribute VueVO vo, Model model) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		// Date Format 설정
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		mapper.setDateFormat(dateFormat);
+		
+		String readPost = mapper.writeValueAsString(vueService.readOne(vo.getBbsId()));
+		
+		model.addAttribute("post", readPost);
+		model.addAttribute("vo", vo);
+		return "board/editForm.tiles";
+	}
+	
 	
 }

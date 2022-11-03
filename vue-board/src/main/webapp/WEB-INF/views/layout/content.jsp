@@ -11,27 +11,31 @@
 	<div id="app">
 		{{ message }}
 		<button @click="change">change</button>
+		<p>{{ x }}<input v-model="x"></p>
+		<p>{{ y }}<input v-model="y"></p>
+		<p>= <span v-text="result"></span></p>
 	</div>
 </body>
 <script>
-	const { createApp } = Vue
 	
-	createApp({
+	const app = Vue.createApp({
 		data() {
 			return {
+				x : 0, 
+				y : 0, 
+				lastResult : 0,
 				message : 'Hello Vue!'
 			}
 		},
 		methods : {
 			change : function() {
-					if(this.message == 'Hello Vue!'){
-						this.message = 'Hello Vue Method!'
-					} else {
-						this.message = 'Hello Vue!'
-					}
+					this.message = this.message == 'Hello Vue!' ?  'Hello Vue button' : 'Hello Vue!'
 						
 				}
-			}
-	}).mount('#app')
+			},
+		computed : {
+			
+		}
+	}).mount("#app")
 </script>
 </html>

@@ -192,6 +192,12 @@
 			<version>2.9.6</version>
 		</dependency>
 		
+		<!-- URL 인코딩. -->
+		<dependency>
+			<groupId>com.mysema.commons</groupId>
+			<artifactId>mysema-commons-lang</artifactId>
+			<version>0.2.4</version>
+		</dependency>
 	</dependencies>
     <build>
         <plugins>

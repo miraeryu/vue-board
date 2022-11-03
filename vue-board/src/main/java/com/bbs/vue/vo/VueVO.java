@@ -2,6 +2,8 @@ package com.bbs.vue.vo;
 
 import java.sql.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class VueVO extends VueCommonVO{
 	
 private int bbsId;				// 글번호
@@ -18,6 +20,7 @@ private int bbsId;				// 글번호
 	
 	private String updtNm;			// 수정자
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date updtDt;			// 수정일
 	
 	private String useAt;			// 사용여부
