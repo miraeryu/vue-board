@@ -16,35 +16,66 @@ public class VueDAO {
 	@Resource(name="sqlSession")
 	SqlSession sql;
 	
-	public List<VueVO> allList(VueVO vo) {
+	/**
+	 * 전체 목록 조회
+	 * @param VueVO
+	 * @throws Exception
+	 */
+	public List<VueVO> allList(VueVO vo) throws Exception {
 		return sql.selectList("VueMapper.allList", vo);
 	}
-
-	public int rowCnt(VueVO vo) {
+	
+	/**
+	 * 게시물 전체 개수 조회
+	 * @param VueVO
+	 * @throws Exception
+	 */
+	public int rowCnt(VueVO vo) throws Exception {
 		return sql.selectOne("VueMapper.rowCnt", vo);
 	}
 
-	public VueVO readOne(int bbsId) {
+	/**
+	 * 게시물 상세 조회
+	 * @param int
+	 * @throws Exception
+	 */
+	public VueVO readOne(int bbsId) throws Exception {
 		return sql.selectOne("VueMapper.readOne", bbsId);
 	}
 
-	public int newPost(VueVO vo) {
-		return sql.insert("VueMapper.newPost", vo);
-	}
-
-	public int maxBbsId() {
+	/**
+	 * 게시물 번호 최대값+1을 구하는 메소드
+	 * @param 
+	 * @throws Exception
+	 */
+	public int maxBbsId() throws Exception {
 		return sql.selectOne("VueMapper.maxBbsId");
 	}
 
-	public int editPost(VueVO vo) {
+	/**
+	 * 게시물 등록 / 수정
+	 * @param VueVO
+	 * @throws Exception
+	 */
+	public int editPost(VueVO vo) throws Exception {
 		return sql.update("VueMapper.editPost", vo);
 	}
 
-	public int deletePost(int bbsId) {
+	/**
+	 * 게시물 삭제
+	 * @param int
+	 * @throws Exception
+	 */
+	public int deletePost(int bbsId) throws Exception {
 		return sql.delete("VueMapper.deletePost", bbsId);
 	}
 
-	public int updateReadCnt(int bbsId) {
+	/**
+	 * 게시물 조회수 업데이트
+	 * @param int
+	 * @throws Exception
+	 */
+	public int updateReadCnt(int bbsId) throws Exception {
 		return sql.update("VueMapper.updateReadCnt", bbsId);
 	}
 

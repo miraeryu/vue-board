@@ -14,10 +14,10 @@
 <!-- 공통 코드 연결 -->
 <!-- 
 <script src="/resources/js/common.js"></script>
-<link rel="stylesheet" href="/resources/css/board.css">
  -->
+<link rel="stylesheet" href="/resources/css/board.css">
 <!-- vue.js CDN -->
-<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/vue@2"></script>
 </head>
 <body>
 		<tiles:insertAttribute name="header"/>

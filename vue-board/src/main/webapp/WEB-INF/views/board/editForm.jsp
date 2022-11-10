@@ -7,56 +7,104 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>EditForm</h1>
-	<div id="page-info">
-		<input type="hidden" id="nowPage" value="${ vo.nowPage }">
-		<input type="hidden" id="hiddenCategory" value="${ vo.category }">
-		<input type="hidden" id="keyword" value="${ vo.keyword }">
-	</div>
-	<div class="edit-form">
-		<form>
-			<input type="hidden" name="bbsId" id="bbsId" v-model="post.bbsId ">
-			<table id="edit-form-table">
-				<tbody>
-					<tr>
-						<td>글제목</td>
-						<td><input type="text" name="title" id="title" placeholder="제목을 입력하세요." v-model="post.title"></td>
-					</tr>
-					<tr>
-						<td>수정자</td>
-						<td><input type="text" name="updtNm" id="updtNm" placeholder="작성자를 입력하세요." v-model="post.updtNm"></td>
-					</tr>
-					<tr>
-						<td>내용</td>
-						<td><textarea name="content" id="content" placeholder="내용을 입력하세요." v-model="post.content"></textarea></td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-						<span v-if="info.bbsId != 0">
-							<button type="button" @click="editConfirm()">확인</button>
-						</span>
-						<span v-else>
-							<button type="button" @click="insertConfirm()">등록</button>
-						</span>
-							<button type="button" @click="listConfirm()">취소</button>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</form>
+	<div class="edit-insert" id="edit-insert">
+		<p><h1 v-if="post.bbsId == 0">InsertForm</h1></p>
+		<p><h1 v-if="post.bbsId != 0">editForm</h1></p>
+		<!-- 
+		<div id="page-info">
+			<input type="hidden" id="nowPage" value="${ vo.nowPage }">
+			<input type="hidden" id="hiddenCategory" value="${ vo.category }">
+			<input type="hidden" id="keyword" value="${ vo.keyword }">
+		</div>
+		 -->
+		<div class="edit-form">
+			<form>
+				<input type="hidden" name="bbsId" id="bbsId" v-model="post.bbsId ">
+				<table id="edit-form-table">
+					<tbody>
+						<tr>
+							<td>글제목</td>
+							<td><input type="text" name="title" id="title" placeholder="제목을 입력하세요." v-model="post.title"></td>
+						</tr>
+						<tr>
+							<td>수정자</td>
+							<td><input type="text" name="updtNm" id="updtNm" placeholder="작성자를 입력하세요." v-model="post.updtNm"></td>
+						</tr>
+						<tr>
+							<td>내용</td>
+							<td><textarea name="content" id="content" placeholder="내용을 입력하세요." v-model="post.content"></textarea></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="2">
+							<span v-if="post.bbsId == 0">
+								<button type="button" @click="editConfirm()">등록</button>
+							</span>
+							<span v-if="post.bbsId != 0">
+								<button type="button" @click="editConfirm()">확인</button>
+							</span>
+								<button type="button" @click="listConfirm()">취소</button>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		</div>
 	</div>
 </body>
 <script>
-	const editTable = Vue.createApp({
-		el : "#edit-form-table",
+	var editTable = new Vue({
+		el : "#edit-insert",
 		data : function(){
 			return {
-				post : ${post}
+				post : ${post},
+				formTitle : 'InsertForm'
 			}
+		},
+		methods : {
+			editConfirm : function(){
+				let vo = {
+						bbsId : this.post.bbsId,
+						title : this.post.title,
+						registNm : this.post.updtNm,
+						content : this.post.content
+						};
+				$.ajax({
+					url : "/editPost",
+					method : "POST",
+					data : JSON.stringify(vo),
+					contentType: "application/json; charset=UTF-8",
+					success : function(result){
+						if(result = 1 && vo.bbsId != 0){
+							alert("수정 성공");
+							location.href="/list";
+						} else if(result = 1 && vo.bbsId == 0){
+							alert("등록 성공");
+							location.href="/list";
+						} else if(result = 0){
+							alert("알 수 없는 오류로 인한 전송 실패")
+						}
+					},
+					error : function(err){
+						alert("에러 발생 : " + err);
+					}
+					
+				})
+			},
+			listConfirm : function() {
+				var result = confirm("작성중이던 내용이 모두 사라집니다. \n목록으로 돌아가시겠습니까?");
+				if(result){
+					location.href="/list"
+				}else{
+					alert("요청을 취소하였습니다.")
+				}
+			}
+		},
+		mounted : function() {
+			var editTable = this;
 		}
-	}).mount("#edit-form-table")
+	})
 		
 </script>
 </html>

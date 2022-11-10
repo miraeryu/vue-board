@@ -2,6 +2,9 @@ package com.bbs.vue.vo;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 public class VueVO extends VueCommonVO{
 	
 private int bbsId;				// 글번호
@@ -14,10 +17,17 @@ private int bbsId;				// 글번호
 	
 	private String registNm;		// 작성자
 	
+	/*
+	 * 1.Date형식이 아닌 String 형식으로 받아오기
+	 * 2.Mapper에서 Date()처리해주기
+	 * 3.@JsonFormat으로 원하는 형식으로 받아오기
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date registDt;			// 작성일
 	
 	private String updtNm;			// 수정자
 	
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	private Date updtDt;			// 수정일
 	
 	private String useAt;			// 사용여부

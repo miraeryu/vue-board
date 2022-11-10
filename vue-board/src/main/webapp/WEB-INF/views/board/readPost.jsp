@@ -23,15 +23,17 @@
 				</tr>
 				<tr>
 					<td>글제목</td>
-					<td colspan="5">{{ post.title }}</td>
+					<td colspan="3">{{ post.title }}</td>
+					<td>조회 수</td>
+					<td>{{ post.readCnt + 1 }}</td>
 				</tr>
 				<tr>
 					<td>작성자</td>
 					<td>{{ post.updtNm }}</td>
 					<td>작성 날짜</td>
+					<td>{{ post.registDt }}</td>
+					<td>수정 날짜</td>
 					<td>{{ post.updtDt }}</td>
-					<td>조회 수</td>
-					<td>{{ post.readCnt + 1 }}</td>
 				</tr>
 				<tr>
 					<td colspan="6"><pre>{{ post.content }}</pre></td>
@@ -40,9 +42,9 @@
 			<tfoot>
 				<tr>
 					<td colspan="6">
-						<button type="button" onclick="goModify()">수정하기</button>
-						<button type="button" onclick="delConfirm()">삭제하기</button>
-						<button type="button" onclick="goList()">목록으로</button>
+						<button type="button" @click="goModify(post.bbsId)">수정하기</button>
+						<button type="button" @click="delConfirm(post.bbsId)">삭제하기</button>
+						<button type="button" @click="goList()">목록으로</button>
 					</td>
 				</tr>
 			</tfoot>
@@ -50,13 +52,46 @@
 	</div>
 </body>
 <script>
-	const readPostDiv = Vue.createApp({
+	var readPostDiv = new Vue({
 		el : "#read-post-div",
 		data : function(){
 			return {
 				post : ${post}
 			}
+		},
+		methods : {
+			goModify : function(id) {
+				location.href="/editForm?bbsId=" + id;
+			},
+			delConfirm : function(id) {
+				var result = confirm("정말 삭제하시겠습니까?");
+				if(result){
+					$.ajax({
+						url : "/deletePost?bbsId=" + id,
+						method : "GET",
+						success : function(result){
+							if(result = 1){
+								alert("삭제 성공");
+								location.href="/list";
+							} else {
+								alert("삭제 실패");
+							}
+						},
+						error : function(error, status, msg){
+							alert("데이터 전송 실패");
+						}
+					})
+				}else{
+					alert("삭제를 취소하였습니다.")
+				}
+			},
+			goList : function() {
+				location.href = "/list"
+			}
+		},
+		mounted : function() {
+			var readPostDiv = this;
 		}
-	}).mount("#read-post-div")
+	})
 </script>
 </html>

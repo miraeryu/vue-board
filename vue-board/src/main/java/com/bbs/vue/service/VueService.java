@@ -9,27 +9,24 @@ public interface VueService {
 	
 
 	//전체 조회
-	public List<VueVO> allList(VueVO vo);
+	public List<VueVO> allList(VueVO vo) throws Exception;
 	
 	//글 갯수 조회
-	public int rowCnt(VueVO vo);
+	public int rowCnt(VueVO vo) throws Exception;
 	
 	//상세 조회
-	public VueVO readOne(int bbsId);
+	public VueVO readOne(int bbsId) throws Exception;
 		
-	//새글 쓰기
-	public int newPost(VueVO vo);
-	
 	//maxBbsId 값 구하기
-	public int maxBbsId();
+	public int maxBbsId() throws Exception;
 		
-	//글 수정
-	public int editPost(VueVO vo);
+	//글 수정, 등록
+	public int editPost(VueVO vo) throws Exception;
 		
 	//글 삭제
-	public int deletePost(int bbsId);
+	public int deletePost(int bbsId) throws Exception;
 		
 	//조회수 업데이트
-	public int updateReadCnt(int bbsId);
+	public int updateReadCnt(int bbsId) throws Exception;
 
 }

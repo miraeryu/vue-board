@@ -5,8 +5,8 @@
 		  SELECT  bbs_id		AS bbsId
 		  	   ,  title			AS title
 		  	   ,  read_cnt		AS readCnt
+		  	   ,  regist_dt		AS registDt
 		  	   ,  updt_nm		AS updtNm
-		  	   ,  updt_dt		AS updtDt
 		  	   
 		    FROM  default_bbs
 		   WHERE  use_at = 'Y'
@@ -26,8 +26,9 @@
 			</if>
 		</if>
 		ORDER BY  bbs_id DESC
-		<!-- startRow행부터 viewPage건 출력 -->
-		
+		<!-- startRow행부터 viewPage건 출력 
+		-->
+		LIMIT #{ startRow } , #{ viewPage }
 	</select>
 	
 	<select id="rowCnt" parameterType="VueVO" resultType="Integer">
@@ -56,6 +57,7 @@
 			 ,  title			AS title
 			 ,  content			AS content
 			 ,  read_cnt		AS readCnt
+			 ,  regist_dt		AS registDt
 			 ,  updt_nm			AS updtNm
 			 ,  updt_dt			AS updtDt
 			 
@@ -68,8 +70,9 @@
 		  FROM  default_bbs
 	</select>
 	
-	<insert id="newPost" parameterType="VueVO">
-		INSERT INTO default_bbs(
+	<insert id="editPost" parameterType="VueVO">
+
+	 	INSERT INTO default_bbs(
 		
 				bbs_id
 			  , title
@@ -91,19 +94,14 @@
 			  , #{registNm}
 			  , NOW()
 			  , 'Y'
-			  )
 			  
+			  )ON DUPLICATE KEY UPDATE
+			  title = #{title}
+			  ,content = #{content}
+			  ,updt_nm = #{registNm}
+			  ,updt_dt = NOW()
+	 		
 	</insert>
-	
-	<update id="editPost" parameterType="VueVO">
-		UPDATE default_bbs
-		   SET title = #{title}
-		     , content = #{content}
-		     , updt_nm = #{updtNm}
-		     , updt_dt = NOW()
-		 WHERE bbs_id = #{bbsId}
-		
-	</update>
 	
 	<update id="deletePost">
 		UPDATE default_bbs
