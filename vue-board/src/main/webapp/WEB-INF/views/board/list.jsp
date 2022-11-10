@@ -49,7 +49,7 @@
 				<tr>
 					<td>{{ info.nowPage }} 페이지</td>
 					<td colspan="4">
-					<pagination :pageinfo="info" @movePage="search"></pagination>
+					<pagination :pageinfo="info" @move="search"></pagination>
 					</td>
 				</tr>
 				<tr>
@@ -71,7 +71,7 @@
     - computed와 watch가 하는 기능은 비슷하지만 다름.
  * mounted : vue 객체가 메모리에 올라가고, 화면에 로드될 때 function을 통해 로직이 실행됨. 
  */
-
+ 
 	var table = new Vue({
 		el : "#listTable",
 		data : {
@@ -82,7 +82,7 @@
 			search : function(num){
 				console.log("category : " + this.info.category + ", keyword : " + this.info.keyword + ", nowPage : " + this.info.nowPage)
 				var table = this;
-				this.info.nowPage = nowPage;
+				this.info.nowPage = num;
 				console.log(nowPage);
 				$.ajax({
 					url : "/listLoad",
