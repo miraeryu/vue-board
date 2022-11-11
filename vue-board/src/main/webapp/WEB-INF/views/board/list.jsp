@@ -9,14 +9,25 @@
 <body>
 	<div id="listTable">
 		<div id="searchKey">
+		<form action="/list" method="GET">
 			<select id="category" name="category" v-model="info.category">
 				<option value="all">제목/내용</option>
 				<option value="title">제목</option>
 				<option value="content">내용</option>
 				<option value="updtNm">작성자</option>
 			</select>
+			<input type="text" id="keyword" name="keyword" v-bind:value="info.keyword">
+			<button type="submit" id="searchBtn" name="searchBtn">검색</button>
+			<!-- 
 			<input type="text" id="keyword" name="keyword" v-model="info.keyword" @keyup:enter="search(1)">
-			<button type="submit" id="searchBtn" name="searchBtn" @click="search(1)">검색</button>
+			<button type="button" id="searchBtn" name="searchBtn" @click="search(1)">검색</button>
+			 -->
+		</form>
+		</div>
+		<div id="page-info">
+			<input type="hidden" id="nowPage" v-bind:value="info.nowPage">
+			<input type="hidden" id="hiddenCategory" v-bind:value="info.category">
+			<input type="hidden" id="hiddenKeyword" v-bind:value="info.keyword">
 		</div>
 		<table id="table-main">
 			<colgroup>
@@ -36,12 +47,12 @@
 			<tbody id="listTabletbody">
 				<tr v-if="list.length > 0" v-for="(row, idx) in list">
 					<td>{{ row.bbsId }}</td>
-					<td><a class="selectTitle" href="#" @click="readPost(row.bbsId)">{{ row.title }}</a></td>
+					<td><a class="selectTitle" href="#" v-on:click="readPost(row.bbsId)">{{ row.title }}</a></td>
 					<td>{{ row.updtNm }}</td>
-					<td>{{ row.registDt }}</td>
+					<td>{{ row.registDt | cuttingHour }}</td>
 					<td>{{ row.readCnt }}</td>
 				</tr>
-				<tr v-if="list.length = 0">
+				<tr v-if="list.length == 0">
 					<td colspan="5"><h4>검색 결과가 없습니다.</h4></td>
 				</tr>
 			</tbody>
@@ -49,17 +60,27 @@
 				<tr>
 					<td>{{ info.nowPage }} 페이지</td>
 					<td colspan="4">
-					<pagination :pageinfo="info" @move="search"></pagination>
+					<!-- 
+					<pagination :pageinfo="info"></pagination>
+					 -->
+					<ul class="page">
+						<li v-if="info.nowPage != 1 ">
+							<a href="#" v-on:click="search()">prev</a>
+						</li>
+						<li v-for="i in numbers"><a v-on:click="search()">{{ i }}</a></li>
+						<li v-if="info.maxPageCnt > 1 && info.nowPage != info.maxPageCnt">
+							<a href="#" v-on:click="search()">next</a>
+						</li>
+					</ul>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="5"><button type="button" @click="goForm()">새글쓰기</button></td>
+					<td colspan="5"><button type="button" v-on:click="goForm()">새글쓰기</button></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
 </body>
-<jsp:include page="/WEB-INF/views/board/components/pagination.jsp"/>
 <script>
 /* vue 객체 
  * el : 선택 html요소 내부에 있는 html요소들을 vue가 컨트롤 해줌.
@@ -76,33 +97,54 @@
 		el : "#listTable",
 		data : {
 			list : ${ list },
-			info : ${ info }
+			info : ${ info },
+			category : 'all'
+		},
+		computed : {
+			page : function() {
+				let numbers = [];
+				for (let i = (info.nowPage-1); i <= (info.nowPage +1); i++ ) {
+					if (i > 0 && info.maxPageCnt >= i) {
+						number.push(i);
+					}
+				}
+				console.log(number)
+				return numbers;
+			}
+		},
+		filters : {
+			/*
+			 원하는 항목에 {{ row.registDt(=값) | cuttingHour(=filters 안에 생성된 메소드명) }} 형식으로 작성
+			 이미 나와있는 데이터를 한번 더 조작할 수 있음(실제 값은 변경되지않음 >> readPost에서는 시간까지 나옴)
+			*/
+			cuttingHour : function(cutDate){			// 시간 정보 자르기
+				return cutDate.substr(0, 10);
+			}
 		},
 		methods : {
-			search : function(num){
+			search : function(prop){
 				console.log("category : " + this.info.category + ", keyword : " + this.info.keyword + ", nowPage : " + this.info.nowPage)
-				var table = this;
-				this.info.nowPage = num;
-				console.log(nowPage);
+				console.log(prop)
 				$.ajax({
-					url : "/listLoad",
-					method : "GET",
-					data : { 
-						nowPage : this.info.nowPage,
-						category : this.info.category,
-						keyword : this.info.keyword
-					},
+					url : "/listLoad2",
+					method : "POST",
+					data : JSON.stringify(prop),
+					dataType : "JSON",
+					contentType: "application/json; charset=UTF-8",
 					success : function(data){
 						table.list = data;
-						console.log(data)
+						console.log(data);
 					},
 					error : function(error){
 						alert(error);
 					}
 				})
+				
 			},
 			readPost : function(id) {
-				location.href="/readPost?bbsId=" + id;
+				location.href="/readPost?category=" + this.info.category
+							+ "&keyword=" + this.info.keyword + "&nowPage=" 
+							+ this.info.nowPage + "&bbsId=" + id;
 			},
 			goForm : function() {
 				location.href="/editForm";

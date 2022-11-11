@@ -39,13 +39,15 @@ public class VueController {
 	// 조회 메인 페이지
 	@RequestMapping("/list")
 	public String list(@ModelAttribute VueVO vo, Model model) throws Exception {
+		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		ObjectMapper mapper = new ObjectMapper();
 		logger.info("=========================List========================="); 
-		System.out.println("parameters : np" + vo.getNowPage());
 		vo.setAllPostCnt(vueService.rowCnt(vo));				//전체 행 개수 세팅
-		if (vo.getNowPage() == 0) {						// 처음 로딩할 경우
+		System.out.println(vueService.rowCnt(vo));
+		if (vo.getNowPage() == 0) {							// 처음 로딩할 경우
 			vo.setNowPage(1);
 		}
+		/*
 		int endPage = ((int) Math.ceil((double)vo.getNowPage()/(double)vo.getDisplayPage())) * 3;
 		int startPage = endPage -2;
 		vo.setStartPage(startPage);
@@ -54,13 +56,12 @@ public class VueController {
 		} else {
 			vo.setEndPage(endPage);
 		}
+		*/
 		if(vo.getCategory() == null) {
 			vo.setCategory("all");
 		}
 		model.addAttribute("list", mapper.writeValueAsString(vueService.allList(vo)));
 		model.addAttribute("info", mapper.writeValueAsString(vo));
-		System.out.println(mapper.writeValueAsString(vueService.allList(vo)));
-		System.out.println(mapper.writeValueAsString(vo));
 		return "board/list.tiles";
 	}
 	
@@ -70,26 +71,36 @@ public class VueController {
 	 * Map<String, Object> 형식으로 받아오는것도 알아두기~
 	 */
 	// 아작스로 검색 데이터 다시 불러오는 메소드
+	/*
 	@RequestMapping("/listLoad")
 	public ResponseEntity<List<VueVO>> listLoad(@ModelAttribute VueVO vo) throws Exception {
 		logger.info("=========================Load=========================");
 		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		List<VueVO> list = vueService.allList(vo);
+		System.out.println(list.get(0).getNowPage());
 		return new ResponseEntity<List<VueVO>>(list, HttpStatus.OK);
+	}
+	*/
+	
+	@ResponseBody
+	@RequestMapping("/listLoad2")
+	public List<VueVO> listLoad2(@RequestBody VueVO vo) throws Exception {
+		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
+		List<VueVO> list = vueService.allList(vo);
+		System.out.println(list);
+		return list;
 	}
 	
 	// 상세보기
 	@RequestMapping("/readPost")
 	public String readPost(@ModelAttribute VueVO vo, Model model) throws Exception {
+		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		ObjectMapper mapper = new ObjectMapper();
-		// Date Format 설정
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        mapper.setDateFormat(dateFormat);
         
         logger.info("=========================Read=========================");
 		String readPost = mapper.writeValueAsString(vueService.readOne(vo.getBbsId()));
 		model.addAttribute("post", readPost);
-		model.addAttribute("vo", vo);
+		model.addAttribute("vo", mapper.writeValueAsString(vo));
 		if (readPost != null) {
 			vueService.updateReadCnt(vo.getBbsId());
 			logger.info("======================ViewUpdate======================");
@@ -101,11 +112,16 @@ public class VueController {
 	@RequestMapping("/editForm")
 	public String editForm(@ModelAttribute VueVO vo, Model model) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
-		
+		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		logger.info("======================editForm======================");
+		VueVO read = new VueVO();
 		if(vo.getBbsId() != 0) {
-			model.addAttribute("post", mapper.writeValueAsString(vueService.readOne(vo.getBbsId())));
-		} else {			
+			read = vueService.readOne(vo.getBbsId());
+			read.setCategory(vo.getCategory());
+			read.setKeyword(vo.getKeyword());
+			read.setNowPage(vo.getNowPage());
+			model.addAttribute("post", mapper.writeValueAsString(read));
+		}else {
 			model.addAttribute("post", mapper.writeValueAsString(vo));
 		}
 		return "board/editForm.tiles";

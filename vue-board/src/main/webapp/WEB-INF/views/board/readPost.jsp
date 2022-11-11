@@ -10,9 +10,9 @@
 <body>
 	<h1>readPost</h1>
 	<div id="page-info">
-		<input type="hidden" id="nowPage" value="${ vo.nowPage }">
-		<input type="hidden" id="hiddenCategory" value="${ vo.category }">
-		<input type="hidden" id="keyword" value="${ vo.keyword }">
+		<input type="hidden" id="nowPage" :value="vo.nowPage">
+		<input type="hidden" id="hiddenCategory" :value="vo.category">
+		<input type="hidden" id="keyword" :value="vo.keyword">
 	</div>
 	<div id="read-post-div">
 		<table id="read-table">
@@ -56,12 +56,15 @@
 		el : "#read-post-div",
 		data : function(){
 			return {
-				post : ${post}
+				post : ${post},
+				vo : ${vo}
 			}
 		},
 		methods : {
 			goModify : function(id) {
-				location.href="/editForm?bbsId=" + id;
+				location.href="/editForm?category=" + this.vo.category
+				+ "&keyword=" + this.vo.keyword + "&nowPage=" 
+				+ this.vo.nowPage + "&bbsId=" + id;
 			},
 			delConfirm : function(id) {
 				var result = confirm("정말 삭제하시겠습니까?");
@@ -86,7 +89,9 @@
 				}
 			},
 			goList : function() {
-				location.href = "/list"
+				location.href="/list?category=" + this.vo.category
+				+ "&keyword=" + this.vo.keyword + "&nowPage=" 
+				+ this.vo.nowPage;
 			}
 		},
 		mounted : function() {

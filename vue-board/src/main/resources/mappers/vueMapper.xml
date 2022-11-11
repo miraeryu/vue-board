@@ -10,7 +10,7 @@
 		  	   
 		    FROM  default_bbs
 		   WHERE  use_at = 'Y'
-		<if test="keyword != null and keyword != ''">
+		<if test="keyword != null and keyword != '' and keyword != 'null'">
 			<if test="category == 'all'">
 			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
 			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
@@ -35,7 +35,7 @@
 		SELECT  COUNT(bbs_id)
 		  FROM  default_bbs
 		 WHERE  use_at = 'Y'
-		<if test="keyword != null and keyword != ''">
+		<if test="keyword != null and keyword != '' and keyword != 'null'">
 			<if test="category == 'all'">
 			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
 			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
