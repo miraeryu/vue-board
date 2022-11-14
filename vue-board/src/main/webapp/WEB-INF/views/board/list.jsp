@@ -143,7 +143,8 @@
 				v-model에 입력할때는 getter,setter가 필요함
 				*/
 				get () {
-					if(this.info.category = 'null'){
+					console.log(this.info.category)
+					if(this.info.category == 'null' || !this.info.category){
 						return this.info.category = 'all';
 					} else {
 						return this.info.category;
@@ -224,7 +225,34 @@
 				2.
 				ajax 이용
 				Map방식으로 두가지 데이터를 전송
+				
+				$.ajax({
+					url : "요청전송url",
+					type : "요청방식(GET,POST,PUT,DELETE)",
+					data : {
+						url로 전송하는 parameter값
+					},
+					contentType : "전송하는 데이터의 타입" >> 
+								디폴트값 : application/x-www-form-urlencoded; charset=utf-8,
+								data에서 json.stringify 사용 시 >> application/json; charset-utf-8,
+					dataType : "전송하는 data의 type 지정" >> xml,html,script,json,text 등등이 있음,
+					async : true/false,			요청 시 동기 유무 선택, 디폴트 : true,
+					timeout : 3000 (설정한 시간 이후 error로 넘어감, ms 단위로 1000=1sec),
+					success : function(data) {
+						요청 성공 시 이벤트 작성
+						이 때 data > 위에 설정해둔 dataType으로 받음
+						dataType 혹은 contentType 안 맞으면 오류 나기 쉬움! 조심
+					},
+					error : {
+						요청 실패 시 이벤트 작성
+					},
+					complete : {
+						요청 완료 시 이벤트 작성
+					}
+				})
 				*/
+				
+				// 전송할 데이터 선언
 				let prop = {
 					category : this.info.category,
 					keyword : this.info.keyword,
@@ -234,9 +262,11 @@
 				$.ajax({
 					url : "/listLoad2",
 					method : "POST",
-					data : JSON.stringify(prop),
+					timeout : 5000,				// 5sec 안에 처리가 안되면 error
+					data : JSON.stringify(prop),	// prop를 JSON형태로 전환 >> controller에서는 RequestBody/ResponseBody를 써야함 혹은 @RestController
 					dataType : "JSON",
 					contentType: "application/json; charset=UTF-8",
+					async : false,
 					success : function(data){
 						table.list = data.list;
 						table.info = data.info;
