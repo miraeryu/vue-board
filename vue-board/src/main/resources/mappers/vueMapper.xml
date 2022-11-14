@@ -12,17 +12,18 @@
 		   WHERE  use_at = 'Y'
 		<if test="keyword != null and keyword != '' and keyword != 'null'">
 			<if test="category == 'all'">
-			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
-			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
+			<!-- MariaDB는 대소문자 구분을 하지 않음... 대소문자 구분이 필요하면 BINARY()쓸것 -->
+			 AND  (title LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
+			 	OR content LIKE CONCAT('%', BINARY(#{ keyword }), '%') )
 			</if>
 			<if test="category == 'title'">
-				AND title LIKE CONCAT('%', #{ keyword }, '%')
+				AND title LIKE CONCAT('%', BINARY(#{ keyword }), '%')
 			</if>
 			<if test="category == 'content'">
-				AND content LIKE CONCAT('%', #{ keyword }, '%') 
+				AND content LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
 			</if>
 			<if test="category == 'updtNm'">
-				AND updt_nm LIKE CONCAT('%', #{ keyword }, '%') 
+				AND updt_nm LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
 			</if>
 		</if>
 		ORDER BY  bbs_id DESC
@@ -37,17 +38,17 @@
 		 WHERE  use_at = 'Y'
 		<if test="keyword != null and keyword != '' and keyword != 'null'">
 			<if test="category == 'all'">
-			 AND  (title LIKE CONCAT('%', #{ keyword }, '%') 
-			 	OR content LIKE CONCAT('%', #{ keyword }, '%') )
+			 AND  (title LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
+			 	OR content LIKE CONCAT('%', BINARY(#{ keyword }), '%') )
 			</if>
 			<if test="category == 'title'">
-				AND title LIKE CONCAT('%', #{ keyword }, '%') 
+				AND title LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
 			</if>
 			<if test="category == 'content'">
-				AND content LIKE CONCAT('%', #{ keyword }, '%') 
+				AND content LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
 			</if>
 			<if test="category == 'updtNm'">
-				AND updt_nm LIKE CONCAT('%', #{ keyword }, '%') 
+				AND updt_nm LIKE CONCAT('%', BINARY(#{ keyword }), '%') 
 			</if>
 		</if>
 	</select>

@@ -17,7 +17,14 @@
 	</div>
 </body>
 <script>
-	
+	/*
+	Vue@3에서의 방식
+	Vue@2 >> Vue@3 : CDN에서 Vue@2 >> Vue@3만 바꿔주면 됨
+	Vue.createApp({
+		el : 안넣어도됨(mount 옆에서 알려주고있으니까)
+		기타는 기본 Vue@2와 비슷함
+	}).mount("구현위치")
+	*/
 	const app = Vue.createApp({
 		data() {
 			return {

@@ -113,6 +113,13 @@
 				}
 			}
 		},
+		watch : {
+			/*
+			'post.title' : function(value, oldValue){
+				console.log(value);
+			}
+			*/
+		},
 		mounted : function() {
 			var editTable = this;
 		}

@@ -20,14 +20,14 @@ private int bbsId;				// 글번호
 	/*
 	 * 1.Date형식이 아닌 String 형식으로 받아오기
 	 * 2.Mapper에서 Date()처리해주기
-	 * 3.@JsonFormat으로 원하는 형식으로 받아오기
+	 * 3.@JsonFormat으로 원하는 형식으로 받아오기(timezone 필수!)
 	 */
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
 	private Date registDt;			// 작성일
 	
 	private String updtNm;			// 수정자
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
 	private Date updtDt;			// 수정일
 	
 	private String useAt;			// 사용여부

@@ -1,5 +1,7 @@
 package com.bbs.vue.vo;
 
+import java.util.ArrayList;
+
 public class VueCommonVO {
 	
 
@@ -23,14 +25,21 @@ public class VueCommonVO {
 	
 	private int startRow;			// 시작행
 	
+	/*
 	private int startPage;			// 해당 블럭의 첫번째 페이지
 	
 	private int endPage;			// 해당 블럭의 마지막 페이지
-	
-	boolean prev;
-	
-	boolean next;
+	*/
+	private ArrayList<Integer> pages = new ArrayList<Integer>(3);		//페이징으로 뿌릴 숫자들 Array
 
+
+	public ArrayList<Integer> getPages() {
+		return pages;
+	}
+
+	public void setPages(ArrayList<Integer> pages) {
+		this.pages = pages;
+	}
 
 	public String getCategory() {
 		return category;
@@ -80,22 +89,6 @@ public class VueCommonVO {
 		this.displayPage = displayPage;
 	}
 
-	public boolean isPrev() {
-		return prev;
-	}
-
-	public void setPrev(boolean prev) {
-		this.prev = prev;
-	}
-
-	public boolean isNext() {
-		return next;
-	}
-
-	public void setNext(boolean next) {
-		this.next = next;
-	}
-
 	public int getMaxPageCnt() {
 		maxPageCnt = (int) Math.ceil((double) allPostCnt / (double)viewPage);
 		return maxPageCnt;
@@ -105,7 +98,7 @@ public class VueCommonVO {
 		startRow = (nowPage - 1) * 5;
 		return startRow;
 	}
-
+/*
 	public int getStartPage() {
 		return startPage;
 	}
@@ -122,6 +115,6 @@ public class VueCommonVO {
 		this.endPage = endPage;
 	}
 	
-	
+*/	
 
 }

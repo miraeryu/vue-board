@@ -1,6 +1,6 @@
 package com.bbs.vue.controller;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +9,6 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bbs.vue.service.VueService;
 import com.bbs.vue.vo.VueVO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller
@@ -42,24 +39,32 @@ public class VueController {
 		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		ObjectMapper mapper = new ObjectMapper();
 		logger.info("=========================List========================="); 
-		vo.setAllPostCnt(vueService.rowCnt(vo));				//전체 행 개수 세팅
-		System.out.println(vueService.rowCnt(vo));
+		vo.setAllPostCnt(vueService.rowCnt(vo));				// 전체 행 개수 세팅
 		if (vo.getNowPage() == 0) {							// 처음 로딩할 경우
 			vo.setNowPage(1);
 		}
-		/*
-		int endPage = ((int) Math.ceil((double)vo.getNowPage()/(double)vo.getDisplayPage())) * 3;
-		int startPage = endPage -2;
-		vo.setStartPage(startPage);
-		if (endPage > vo.getMaxPageCnt()) {
-			vo.setEndPage(vo.getMaxPageCnt());
+		
+		// 페이지 Array 만들기
+		ArrayList<Integer> newPages = new ArrayList<Integer>();
+		if (vo.getNowPage() == 1) {
+			for(int i = 1; i <= 3; i++) {
+				if (i <= vo.getMaxPageCnt()) {
+					newPages.add(i);
+				}
+			}
 		} else {
-			vo.setEndPage(endPage);
+			if(vo.getNowPage() == vo.getMaxPageCnt()) {
+				for (int i = (vo.getMaxPageCnt()-2); i <= vo.getMaxPageCnt() ; i++ ) {
+					newPages.add(i);
+				}
+			} else {
+				for (int i = (vo.getNowPage() -1); i <= (vo.getNowPage()+1); i++) {
+					newPages.add(i);
+				}
+			}
 		}
-		*/
-		if(vo.getCategory() == null) {
-			vo.setCategory("all");
-		}
+		vo.setPages(newPages);				// 만든 pages 세팅
+
 		model.addAttribute("list", mapper.writeValueAsString(vueService.allList(vo)));
 		model.addAttribute("info", mapper.writeValueAsString(vo));
 		return "board/list.tiles";
@@ -84,11 +89,38 @@ public class VueController {
 	
 	@ResponseBody
 	@RequestMapping("/listLoad2")
-	public List<VueVO> listLoad2(@RequestBody VueVO vo) throws Exception {
+	public Map<String, Object> listLoad2(@RequestBody VueVO vo) throws Exception {
 		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		logger.info("=========================List========================="); 
+		vo.setAllPostCnt(vueService.rowCnt(vo));				// 전체 행 개수 세팅
+
+		// 페이지 Array 만들기
+		ArrayList<Integer> newPages = new ArrayList<Integer>();
+		if (vo.getNowPage() == 1) {
+			for(int i = 1; i <= 3; i++) {
+				if (i <= vo.getMaxPageCnt()) {
+					newPages.add(i);
+				}
+			}
+		} else {
+			if(vo.getNowPage() == vo.getMaxPageCnt()) {
+				for (int i = (vo.getMaxPageCnt()-2); i <= vo.getMaxPageCnt() ; i++ ) {
+					newPages.add(i);
+				}
+			} else {
+				for (int i = (vo.getNowPage() -1); i <= (vo.getNowPage()+1); i++) {
+					newPages.add(i);
+				}
+			}
+		}
+		vo.setPages(newPages);				// 만든 pages 세팅
+		
 		List<VueVO> list = vueService.allList(vo);
-		System.out.println(list);
-		return list;
+		VueVO info = vo;
+		resultMap.put("list", list);
+		resultMap.put("info", info);
+		return resultMap;
 	}
 	
 	// 상세보기

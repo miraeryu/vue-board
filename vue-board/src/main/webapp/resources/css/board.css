@@ -22,6 +22,8 @@ tfoot {
 	text-align : right;
 }
 
+/*페이징 설정*/
+
 ul {
 	list-style : none;
 	margin : 0;
@@ -32,6 +34,11 @@ li {
 	margin : 0;
 	padding : 0;
 	float : left;
+}
+
+.pageStyle {
+	font-weight : bold;
+	color : gray;
 }
 
 #searchKey {
