@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.bbs.reply.service.ReplyService;
 import com.bbs.vue.service.VueService;
 import com.bbs.vue.vo.VueVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,9 @@ public class VueController {
 	 */
 	@Resource(name="vueService")
 	private VueService vueService;
+	
+	@Resource(name="replyService")
+	private ReplyService replyService;
 	
 	// 조회 메인 페이지
 	@RequestMapping("/list")
@@ -72,8 +76,10 @@ public class VueController {
         
         logger.info("=========================Read=========================");
 		String readPost = mapper.writeValueAsString(vueService.readOne(vo.getBbsId()));
+		String replyList = mapper.writeValueAsString(replyService.replyList(vo.getBbsId()));
 		model.addAttribute("post", readPost);
 		model.addAttribute("vo", mapper.writeValueAsString(vo));
+		model.addAttribute("reply", replyList);
 		if (readPost != null) {
 			vueService.updateReadCnt(vo.getBbsId());
 			logger.info("======================ViewUpdate======================");

@@ -3,5 +3,6 @@
 <configuration>
 	<typeAliases>
 		<typeAlias type="com.bbs.vue.vo.VueVO" alias="VueVO"/>
+		<typeAlias type="com.bbs.reply.vo.ReplyVO" alias="ReplyVO"/>
 	</typeAliases>
 </configuration>

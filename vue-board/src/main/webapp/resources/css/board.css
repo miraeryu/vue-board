@@ -22,6 +22,11 @@ tfoot {
 	text-align : right;
 }
 
+/*comment테이블 설정*/
+#comment-table-head{
+	background-color : lightgray;
+}
+
 /*페이징 설정*/
 
 ul {

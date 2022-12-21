@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="replyMapper">
+	
+	<!-- 댓글 조회 -->
+	<select id="replyList" resultType="ReplyVO">
+		SELECT  reply_id		AS replyId
+			 ,  content			AS content
+			 ,  writer			AS writer
+			 ,  reg_dt			AS regDt
+			 ,  up_dt			AS upDt
+			 ,  rpl_group		AS rplGroup
+			 ,  grade			AS grade
+			 
+		  FROM  default_rpl
+		 WHERE  rpl_use = 'Y'
+		   AND  bbs_id = #{bbsId}
+	  ORDER BY  reply_id  
+	</select>
+	
+	<!-- 비밀번호 조회 -->
+	<select id="passwordResult" resultType="String">
+		SELECT  rpl_pass		AS rplPass
+		
+		  FROM  default_rpl
+		 WHERE  reply_id = #{replyId}
+	</select>
+	
+	<!-- 가장 높은 값 조회 -->
+	<select id="maxReplyId" resultType="Integer">
+		SELECT  MAX(reply_id) +1 
+		  FROM  default_rpl
+	</select>
+	
+	<!-- 댓글 등록+수정 -->
+	<insert id="editReply">
+		INSERT INTO default_rpl(
+				
+				reply_id
+			  ,	content
+			  , writer
+			  , rpl_pass
+			  , reg_dt
+			  , up_dt
+			  , rpl_use
+			  , bbs_id
+			  , rpl_group
+			  , grade
+			  
+			  )VALUES(
+			  
+			  	#{replyId}
+			  , #{content}
+			  , #{writer}
+			  , #{rplPass}
+			  , NOW()
+			  , NOW()
+			  , 'Y'
+			  , #{bbsId}
+			  , #{replyId}
+			  , 0
+			  
+			  )ON DUPLICATE KEY UPDATE
+			  content = #{content}
+			  , writer = #{writer}
+			  , rpl_pass = #{rplPass}
+			  , up_dt = NOW()
+			  
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<update id="deleteReply">
+		UPDATE	default_rpl
+		   SET	rpl_use = 'N'
+		 WHERE	reply_id = #{replyId}
+	</update>
+</mapper>
