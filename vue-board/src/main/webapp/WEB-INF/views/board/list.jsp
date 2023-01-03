@@ -37,13 +37,15 @@
 		</div>
 		<table id="table-main">
 			<colgroup>
-				<col width="10%">
+				<col width="3%">
+				<col width="7%">
 				<col width="45%">
 				<col width="15%">
 				<col width="20%">
 				<col width="10%">
 			</colgroup>
 			<thead>
+				<th><input type="checkbox" id="allCheck" v-on:click="allCheckBtn('all')"></th>
 				<th>글번호</th>
 				<th>글제목</th>
 				<th>작성자</th>
@@ -52,6 +54,7 @@
 			</thead>
 			<tbody id="listTabletbody">
 				<tr v-if="list.length > 0" v-for="(row, idx) in list">
+					<td><input type="checkbox" id="check" v-on:click="allCheckBtn('chk')"></td>
 					<td>{{ row.bbsId }}</td>
 					<td><a class="selectTitle" href="#" v-on:click="readPost(row.bbsId)">{{ row.title | cuttingTitle }}</a></td>
 					<td>{{ row.updtNm }}</td>
@@ -64,8 +67,8 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td>{{ info.nowPage }} 페이지</td>
-					<td colspan="4">
+					<td colspan="2">{{ info.nowPage }} 페이지</td>
+					<td colspan="3">
 					<ul class="page">
 						<li v-if="info.nowPage != 1 ">
 							<a href="#" v-on:click="search('prev')">prev</a>
@@ -76,13 +79,18 @@
 						</li>
 					</ul>
 					</td>
+					<td><button type="button" v-on:click="checkDelete()">선택삭제</button></td>
 				</tr>
 				<tr>
-					<td colspan="5"><button type="button" v-on:click="goForm()">새글쓰기</button></td>
+					<td colspan="6">
+						<button type="button" v-on:click="goForm()">새글쓰기</button>
+							<button type="button" v-on:Click="downloadExcel()">Excel</button>
+					</td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
+	<form action="/excel/download" method="post" id="excelForm" name="down"></form>
 </body>
 <script>
 /* vue 객체 
@@ -143,7 +151,6 @@
 				v-model에 입력할때는 getter,setter가 필요함
 				*/
 				get () {
-					console.log(this.info.category)
 					if(this.info.category == 'null' || !this.info.category){
 						return this.info.category = 'all';
 					} else {
@@ -283,11 +290,65 @@
 			},
 			goForm : function() {
 				location.href="/editForm";
+			},
+			allCheckBtn : function(type) {
+				if(type == 'all'){
+					if($('#allCheck').is(":checked")){
+						$('input[id="check"]').prop('checked',true);
+					}else{					
+						$('input[id="check"]').prop('checked',false);
+					}
+				}
+				else {
+					var leng = $('input:checkbox[id="check"]:checked').length;
+					if(leng == 5) {
+						$('input[id="allCheck"]').prop('checked',true);
+						}
+					else if (leng < 5) {
+						$('input[id="allCheck"]').prop('checked',false);
+						}
+				}
+			},
+			checkDelete : function() {
+				console.log("삭제버튼눌렸음")
+				var checkbox = $('input[id="check"]:checked');
+				var numList = [];
+				var info = [];
+				checkbox.each(function(i){
+					var bbsNum = checkbox.parent().eq(i).next().text();
+					var info = {
+							bbsId : bbsNum
+					}
+					numList.push(info);
+				});
+				console.log(numList);
+				
+				$.ajax({
+					url : "/deletePost",
+					method : "POST",
+					timeout : 5000,				// 5sec 안에 처리가 안되면 error
+					data : JSON.stringify(numList),	// prop를 JSON형태로 전환 >> controller에서는 RequestBody/ResponseBody를 써야함 혹은 @RestController
+					dataType : "JSON",
+					contentType: "application/json; charset=UTF-8",
+					async : false,
+					success : function(data){
+						location.href = "/list"
+					},
+					error : function(error){
+						alert(error);
+					}
+				})
+			},
+			downloadExcel : function() {
+				$("#excelForm *").remove();
+				$("#excelForm").append("<input type='hidden' name='title' id='title' value="+this.list.title+">");
+				$("#excelForm").append("<input type='hidden' name='writer' id='writer' value="+this.list.title+">");
+				document.down.submit();
 			}
 		},
 		mounted : function (){
 			var table = this;
 		}
-	})
+	});
 </script>
 </html>

@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -87,11 +88,17 @@ public class VueRestController {
 	}
 	
 	// 글 삭제
-	@RequestMapping("/deletePost")
-	public int deletePost(@RequestParam("bbsId") int bbsId) throws Exception {
+	@Transactional
+	@RequestMapping(value="/deletePost", method = RequestMethod.POST)
+	public int deletePost(@RequestBody List<VueVO> list) throws Exception {
 		logger.info("=========================Delete=========================");
-		int result = vueService.deletePost(bbsId);
-		return result;
+		System.out.println(list);
+		for (VueVO vo:list) {
+			vueService.deletePost(vo.getBbsId());
+			vueService.allList(vo);
+		}
+//		int result = vueService.deletePost(bbsId);
+		return 0;
 	}
 	
 }

@@ -1,9 +1,16 @@
 package com.bbs.vue.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -94,17 +101,57 @@ public class VueController {
 		System.out.println("category : " + vo.getCategory() + ", keyword : " + vo.getKeyword() + ", page : " + vo.getNowPage());
 		logger.info("======================editForm======================");
 		VueVO read = new VueVO();
-		if(vo.getBbsId() != 0) {
+		if(vo.getBbsId() == 0) {
+			model.addAttribute("post", mapper.writeValueAsString(vo));
+		}else {
 			read = vueService.readOne(vo.getBbsId());
 			read.setCategory(vo.getCategory());
 			read.setKeyword(vo.getKeyword());
 			read.setNowPage(vo.getNowPage());
 			model.addAttribute("post", mapper.writeValueAsString(read));
-		}else {
-			model.addAttribute("post", mapper.writeValueAsString(vo));
 		}
 		return "board/editForm.tiles";
 	}
+	
+	//엑셀 다운로드
+	@RequestMapping("/excel/download")
+	public void ExcelDownload(HttpServletResponse response) throws IOException {
+		System.out.println("===============Excel=================");
+		Workbook wb = new XSSFWorkbook();
+		Sheet sheet = wb.createSheet("첫번째 시트");
+		Row row = null;
+		Cell cell = null;
+		int rowNum = 0;
+		
+		//헤더
+		row = sheet.createRow(rowNum++);
+		cell = row.createCell(0);
+		cell.setCellValue("번호");
+		cell = row.createCell(1);
+		cell.setCellValue("이름");
+		cell = row.createCell(2);
+		cell.setCellValue("제목");
+		
+		//바디
+		for (int i=0; i<3; i++) {
+			row = sheet.createRow(rowNum++);
+			cell = row.createCell(0);
+			cell.setCellValue(i);
+			cell = row.createCell(1);
+			cell.setCellValue(i+"_Name");
+			cell = row.createCell(2);
+			cell.setCellValue(i+"_title");
+		}
+		
+		//컨텐츠 타입과 파일명 지정
+		response.setContentType("ms-vnd/excel");
+		response.setHeader("Content-Disposition", "attachment;filename=example.xlsx");
+		
+		//Excel File Output
+		wb.write(response.getOutputStream());
+		wb.close();
+		
+		}
 	
 	
 }

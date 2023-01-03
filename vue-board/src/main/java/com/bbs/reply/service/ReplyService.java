@@ -16,8 +16,11 @@ public interface ReplyService {
 	 * 	3-1.대댓글 삭제
 	 * */
 	
-	// 댓글 조회
+	// 게시글에 해당하는 댓글 조회
 	public List<ReplyVO> replyList(int bbsId) throws Exception;
+	
+	// 댓글 1건 조회
+	//public ReplyVO vo replyInfo(int replyId) throws Exception;
 	
 	// 비밀번호 조회
 	public String passwordResult(int replyId) throws Exception;

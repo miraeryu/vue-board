@@ -35,7 +35,8 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<td colspan="2">
+							<td>{{ txtLength }}</td>
+							<td>
 							<span v-if="post.bbsId == 0">
 								<button type="button" @click="editConfirm()">등록</button>
 							</span>
@@ -57,7 +58,8 @@
 		data : function(){
 			return {
 				post : ${post},
-				formTitle : 'InsertForm'
+				formTitle : 'InsertForm',
+				txtLength : 0
 			}
 		},
 		methods : {
@@ -111,6 +113,17 @@
 				}else{
 					alert("요청을 취소하였습니다.")
 				}
+			},
+			getTextLength : function() {
+				var txt = this.post.content;
+				var txtLength = 0;
+				for (var i = 0; i < txt.length; i ++){
+					if (escape(txt.charAt(i)).length == 6){
+						txtLength++;
+					}
+					txtLength++;
+				}
+				return txtLength;
 			}
 		},
 		watch : {
@@ -119,6 +132,18 @@
 				console.log(value);
 			}
 			*/
+			//내용 글자수세기
+			'post.content' : function (value){
+				var txt = value;
+				var length = 0;
+				for (var i = 0; i < txt.length; i++){
+					if (escape(txt.charAt(i)).length == 6){
+						length++;
+					}
+					length++;
+				}
+				this.txtLength = length;
+			}
 		},
 		mounted : function() {
 			var editTable = this;
