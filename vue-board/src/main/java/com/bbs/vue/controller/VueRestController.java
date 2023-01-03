@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bbs.vue.service.VueService;
 import com.bbs.vue.vo.VueVO;
 
+@EnableTransactionManagement
 @RestController
 public class VueRestController {
 	
@@ -95,7 +97,6 @@ public class VueRestController {
 		System.out.println(list);
 		for (VueVO vo:list) {
 			vueService.deletePost(vo.getBbsId());
-			vueService.allList(vo);
 		}
 //		int result = vueService.deletePost(bbsId);
 		return 0;
