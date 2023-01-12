@@ -97,6 +97,7 @@ public class VueRestController {
 		System.out.println(list);
 		for (VueVO vo:list) {
 			vueService.deletePost(vo.getBbsId());
+			vueService.allList(vo);
 		}
 //		int result = vueService.deletePost(bbsId);
 		return 0;

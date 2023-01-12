@@ -168,6 +168,7 @@ text-align : right;
 			delConfirm : function(id) {
 				let result = confirm("정말 삭제하시겠습니까?");
 				if(result){
+
 					$.ajax({
 						url : "/deletePost?bbsId=" + id,
 						method : "GET",
