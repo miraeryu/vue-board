@@ -28,6 +28,17 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 	
 	/**
+	 * 해당 게시물에 대한 댓글 조회
+	 * @param bbsId
+	 * @throws Exception
+	 * @return List<VueReplyVO>
+	 */
+	@Override
+	public ReplyVO replySelect(int replyId) throws Exception {
+		return replyDAO.replySelect(replyId);
+	}
+	
+	/**
 	 * 댓글 비밀번호 대조
 	 * @param replyId
 	 * @throws Exception

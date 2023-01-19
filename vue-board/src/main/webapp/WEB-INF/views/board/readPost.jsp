@@ -204,6 +204,7 @@ text-align : right;
 				ㄴ비밀번호 확인 작업
 			*/
 			reReply : function(replyId) {
+				console.log(replyId);
 				location.href = "/editReplyForm?category=" + this.vo.category
 				+ "&keyword=" + this.vo.keyword + "&nowPage=" + this.vo.nowPage
 				+ "&bbsId=" + this.post.bbsId + "&replyId=" + replyId ;
@@ -255,36 +256,41 @@ text-align : right;
 						bbsId : this.post.bbsId
 				}
 				console.log(replyVO);
-				
-				// 완료 후 새로고침을 위한 url 변수 선언
-				let url = location.href="/readPost?category=" + this.vo.category
-						+ "&keyword=" + this.vo.keyword + "&nowPage=" 
-						+ this.vo.nowPage + "&bbsId=" + this.post.bbsId;
-				
-				$.ajax({
-					url : "/reply/inAndUp",
-					method : "POST",
-					timeout : 5000,
-					data : JSON.stringify(replyVO),
-					dataType : "JSON",
-					contentType : "application/json; charset=UTF-8",
-					async : false,
-					success : function(data) {
-						if(data.result == 1){
-							alert("댓글 등록 완료");
-							readPostDiv.reply = data.reply;
-							location.href = url;
-// 							this.newContent = null;
-// 							this.newWriter = null;
-// 							this.newPassword = null;
-						} else {
-							alert("알 수 없는 오류로 인한 데이터 전송 실패");
+				if (!replyVO.content || !replyVO.writer || !replyVO.rplPass){
+					alert("입력되지 않은 칸이 있습니다.")
+				}else {
+					
+					// 완료 후 새로고침을 위한 url 변수 선언
+					let url = location.href="/readPost?category=" + this.vo.category
+							+ "&keyword=" + this.vo.keyword + "&nowPage=" 
+							+ this.vo.nowPage + "&bbsId=" + this.post.bbsId;
+					
+					$.ajax({
+						url : "/reply/inAndUp",
+						method : "POST",
+						timeout : 5000,
+						data : JSON.stringify(replyVO),
+						dataType : "JSON",
+						contentType : "application/json; charset=UTF-8",
+						async : false,
+						success : function(data) {
+							if(data.result == 1){
+								alert("댓글 등록 완료");
+								readPostDiv.reply = data.reply;
+								location.href = url;
+	// 							this.newContent = null;
+	// 							this.newWriter = null;
+	// 							this.newPassword = null;
+							} else {
+								alert("알 수 없는 오류로 인한 데이터 전송 실패");
+							}
+						},
+						error : function(error) {
+							alert(error);
 						}
-					},
-					error : function(error) {
-						alert(error);
-					}
-				})
+					})
+				}
+				
 			}
 		},
 		mounted : function() {

@@ -18,6 +18,22 @@
 	  ORDER BY  reply_id  
 	</select>
 	
+	<!-- 댓글 단건 조회 -->
+	<select id="replySelect" resultType="ReplyVO">
+		SELECT  reply_id		AS replyId
+			 ,  content			AS content
+			 ,  writer			AS writer
+			 ,  reg_dt			AS regDt
+			 ,  up_dt			AS upDt
+			 ,  rpl_group		AS rplGroup
+			 ,  grade			AS grade
+			 
+		  FROM  default_rpl
+		 WHERE  rpl_use = 'Y'
+		   AND  reply_id = #{replyId}
+	  ORDER BY  reply_id  
+	</select>
+	
 	<!-- 비밀번호 조회 -->
 	<select id="passwordResult" resultType="String">
 		SELECT  rpl_pass		AS rplPass

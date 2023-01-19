@@ -20,7 +20,7 @@ public interface ReplyService {
 	public List<ReplyVO> replyList(int bbsId) throws Exception;
 	
 	// 댓글 1건 조회
-	//public ReplyVO vo replyInfo(int replyId) throws Exception;
+	public ReplyVO replySelect(int replyId) throws Exception;
 	
 	// 비밀번호 조회
 	public String passwordResult(int replyId) throws Exception;

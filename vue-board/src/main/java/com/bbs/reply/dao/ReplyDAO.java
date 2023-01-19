@@ -25,6 +25,16 @@ public class ReplyDAO {
 	}
 	
 	/**
+	 * 해당 게시물에 대한 댓글 조회
+	 * @param 
+	 * @throws Exception
+	 * @return VueReplyVO
+	 */
+	public ReplyVO replySelect(int replyId) throws Exception {
+		return sql.selectOne("replyMapper.replySelect", replyId);
+	}
+	
+	/**
 	 * 댓글 비밀번호 대조
 	 * @param replyId
 	 * @throws Exception

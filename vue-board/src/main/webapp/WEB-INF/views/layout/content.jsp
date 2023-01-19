@@ -7,14 +7,21 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>CONTENT</h1>
-	<div id="app">
-		{{ message }}
-		<button @click="change">change</button>
-		<p>{{ x }}<input v-model="x"></p>
-		<p>{{ y }}<input v-model="y"></p>
-		<p>= <span v-text="result"></span></p>
-	</div>
+	<h1>Login</h1>
+	<form name="loginForm">
+		<input type="text" name="loginId" class="loginId">
+		<br>
+		<input type="password" name="loginPassword" class="loginPassword">
+		<button type="submit">확인</button>
+	</form>
+<!-- 	<h1>CONTENT</h1> -->
+<!-- 	<div id="app"> -->
+<!-- 		{{ message }} -->
+<!-- 		<button @click="change">change</button> -->
+<!-- 		<p>{{ x }}<input v-model="x"></p> -->
+<!-- 		<p>{{ y }}<input v-model="y"></p> -->
+<!-- 		<p>= <span v-text="result"></span></p> -->
+<!-- 	</div> -->
 </body>
 <script>
 	/*
